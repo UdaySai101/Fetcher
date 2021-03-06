@@ -1,9 +1,9 @@
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.htmlunit.HtmlUnitDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+
 
 public class Flipkart extends Thread {
 	private String input;
@@ -12,20 +12,21 @@ public class Flipkart extends Thread {
 
 	public void run() {
 
-	/*	ChromeOptions options = new ChromeOptions();
-		 options.setHeadless(true);
-		options.addArguments("--log-level=OFF");
-		options.addArguments("--disable-notifications");
-		driver = new ChromeDriver(options);*/
-		java.util.logging.Logger.getLogger("com.gargoylesoftware").setLevel(Level.OFF); 
-		java.util.logging.Logger.getLogger("org.openqa.selenium").setLevel(Level.OFF);
-		driver = new HtmlUnitDriver();
-		
+		ChromeOptions options=new ChromeOptions();
+		options.setHeadless(true);
+		driver=new ChromeDriver(options);
+
 		driver.get("http://www.flipkart.com/");
 		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 		driver.manage().window().maximize();
-		//driver.findElement(By.cssSelector("body > div._2Sn47c > div > div > button")).click();
-		driver.findElement(By.xpath("//*[@id=\"container\"]/div/div[1]/div[1]/div[2]/div[2]/form/div/div/input"))
+		
+		try {
+			driver.findElement(By.cssSelector("body > div._2Sn47c > div > div > button")).click();
+		}
+		catch(Exception e) {
+		}
+		 
+		driver.findElement(By.xpath("//*[@id='container']/div/div[1]/div[1]/div[2]/div[2]/form/div/div/input"))
 				.sendKeys(input);
 		driver.findElement(By.xpath("//button[@class='L0Z3Pu']")).click();
 
@@ -34,11 +35,11 @@ public class Flipkart extends Thread {
 		} catch (InterruptedException e1) {
 			e1.printStackTrace();
 		}
-		int j=0;
+		int j = 0;
 		System.out.println("In Flipkart: ");
 		driver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
-		for (int i = 0; i < 60; i++) {
-			
+		for (int i = 0; i < 40; i++) {
+
 			String s = "//*[@id=\"container\"]/div/div[3]/div[1]/div[2]/div[   " + i + "    ]/div/div/div/a/div[2]/div["
 					+ " 1 " + "]/div[1]";
 			String p = "//*[@id=\"container\"]/div/div[3]/div[1]/div[2]/div[   " + i + "  ]/div/div/div/a/div[2]/div["
@@ -56,9 +57,10 @@ public class Flipkart extends Thread {
 				continue;
 			}
 		}
-		
+
 		driver.quit();
-		if(j==0) {
+		//webClient.close();
+		if (j == 0) {
 			System.out.println("Cannot find anything!");
 		}
 	}
@@ -69,6 +71,7 @@ public class Flipkart extends Thread {
 	}
 
 	public static String filter(String s, String p, String input, String omit) {
+		
 		if (s.toLowerCase().contains(input.toLowerCase())) {
 			return s + " - " + p;
 		}
@@ -76,5 +79,4 @@ public class Flipkart extends Thread {
 		return null;
 	}
 
-	
 }

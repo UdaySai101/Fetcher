@@ -3,37 +3,36 @@ import java.util.concurrent.TimeUnit;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.htmlunit.HtmlUnitDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 
 public class RelianceDigital extends Thread {
 	private static String input;
 	private static String omit;
 	private static WebDriver driver;
 
-	public void runs() throws InterruptedException {
+	public void run() {
 
-		/*
-		 * ChromeOptions options = new ChromeOptions(); options.setHeadless(true);
-		 * options.addArguments("--disable-notifications"); driver = new
-		 * ChromeDriver(options);
-		 */
+		ChromeOptions options=new ChromeOptions();
+		options.setHeadless(true);
 
-		//java.util.logging.Logger.getLogger("com.gargoylesoftware").setLevel(Level.OFF);
-		// java.util.logging.Logger.getLogger("org.openqa.selenium").setLevel(Level.OFF);
-		driver = new HtmlUnitDriver(true);
+		driver = new ChromeDriver(options);
 
-		// ((HtmlUnitDriver) driver).setJavascriptEnabled(true);
 		driver.get("http://www.reliancedigital.in/");
 		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 		driver.manage().window().maximize();
-		//Actions action = new Actions(driver);
+		
 		driver.findElement(By.id("suggestionBoxEle")).sendKeys(input + Keys.RETURN);
-		// selenium.click(driver.findElement(By.id("RIL_HomeSearchButton")));;
-		Thread.sleep(6000);
+		try {
+			Thread.sleep(1500);
+		} catch (InterruptedException e1) {
+			e1.printStackTrace();
+		}
 		System.out.println("In RelianceDigital: ");
 		int j = 0;
 		driver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
-		for (int i = 0; i < 60; i++) {
+		
+		for (int i = 0; i < 40; i++) {
 			String s = "//*/ul/li[" + i + "]/div/a/div[1]/div[2]/p";
 			String p = "//*/ul/li[" + i + "]/div/a/div[1]/div[2]/div[1]/div/div/span[1]";
 			try {
@@ -52,7 +51,7 @@ public class RelianceDigital extends Thread {
 				continue;
 			}
 		}
-
+		
 		driver.quit();
 		if (j == 0) {
 			System.out.println("Cannot find anything!");
@@ -65,6 +64,7 @@ public class RelianceDigital extends Thread {
 	}
 
 	public static String filter(String s, String p, String input, String omit) {
+		
 		if (s.toLowerCase().contains(input.toLowerCase())) {
 			return s + " - " + p;
 		}
