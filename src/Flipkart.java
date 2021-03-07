@@ -21,11 +21,13 @@ public class Flipkart extends Thread {
 		driver.manage().window().maximize();
 		
 		try {
+			//killing login popup..
 			driver.findElement(By.cssSelector("body > div._2Sn47c > div > div > button")).click();
 		}
 		catch(Exception e) {
 		}
 		 
+		//searching..
 		driver.findElement(By.xpath("//*[@id='container']/div/div[1]/div[1]/div[2]/div[2]/form/div/div/input"))
 				.sendKeys(input);
 		driver.findElement(By.xpath("//button[@class='L0Z3Pu']")).click();
@@ -38,18 +40,22 @@ public class Flipkart extends Thread {
 		int j = 0;
 		System.out.println("In Flipkart: ");
 		driver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
+		
+		//fetching..
 		for (int i = 0; i < 40; i++) {
 
-			String s = "//*[@id=\"container\"]/div/div[3]/div[1]/div[2]/div[   " + i + "    ]/div/div/div/a/div[2]/div["
+			String nameList = "//*[@id=\"container\"]/div/div[3]/div[1]/div[2]/div[   " + i + "    ]/div/div/div/a/div[2]/div["
 					+ " 1 " + "]/div[1]";
-			String p = "//*[@id=\"container\"]/div/div[3]/div[1]/div[2]/div[   " + i + "  ]/div/div/div/a/div[2]/div["
+			String priceList = "//*[@id=\"container\"]/div/div[3]/div[1]/div[2]/div[   " + i + "  ]/div/div/div/a/div[2]/div["
 					+ " 2 " + "]/div[1]/div[1]/div[1]";
 			try {
-				if (driver.findElement(By.xpath(s)).isDisplayed() && driver.findElement(By.xpath(p)).isDisplayed()) {
-					s = driver.findElement(By.xpath(s)).getText();
-					p = driver.findElement(By.xpath(p)).getText();
-					if (filter(s, p, input, omit) != null) {
-						System.out.println(filter(s, p, input, omit));
+				if (driver.findElement(By.xpath(nameList)).isDisplayed() && driver.findElement(By.xpath(priceList)).isDisplayed()) {
+					nameList = driver.findElement(By.xpath(nameList)).getText();
+					priceList = driver.findElement(By.xpath(priceList)).getText();
+					if (filter(nameList, priceList, input, omit) != null) {
+						
+						//filtering..
+						System.out.println(filter(nameList, priceList, input, omit));
 						j++;
 					}
 				}
@@ -59,7 +65,7 @@ public class Flipkart extends Thread {
 		}
 
 		driver.quit();
-		//webClient.close();
+	
 		if (j == 0) {
 			System.out.println("Cannot find anything!");
 		}
@@ -70,10 +76,9 @@ public class Flipkart extends Thread {
 		omit = omitter;
 	}
 
-	public static String filter(String s, String p, String input, String omit) {
-		
-		if (s.toLowerCase().contains(input.toLowerCase())) {
-			return s + " - " + p;
+	public static String filter(String nameList, String priceList, String input, String omit) {
+		if (nameList.toLowerCase().contains(input.toLowerCase())) {
+			return nameList + " - " + priceList;
 		}
 
 		return null;

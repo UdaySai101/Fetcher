@@ -21,6 +21,7 @@ public class Amazon extends Thread {
 		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 		driver.manage().window().maximize();
 	
+		//searchbox..
 		driver.findElement(By.id("twotabsearchtextbox")).sendKeys(input + Keys.ENTER);
 		try {
 			Thread.sleep(1000);
@@ -31,17 +32,21 @@ public class Amazon extends Thread {
 		System.out.println("In Amazon: ");
 		int j=0;
 		driver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
+		
+		//fetching results..
 		for (int i = 0; i < 40; i++) {
-			String s = "//*[@id='search']/div[1]/div[2]/div/span[3]/div[2]/div[" + i
+			String nameList = "//*[@id='search']/div[1]/div[2]/div/span[3]/div[2]/div[" + i
 					+ "]/div/span/div/div/div[2]/div[2]/div/div[1]/div/div/div[1]/h2/a/span";
-			String p = "//*[@id='search']/div[1]/div[2]/div/span[3]/div[2]/div[" + i
+			String priceList = "//*[@id='search']/div[1]/div[2]/div/span[3]/div[2]/div[" + i
 					+ "]/div/span/div/div/div[2]/div[2]/div/div[2]/div[1]/div/div[1]/div[1]/div/div/a";
 			try {
-				if (driver.findElement(By.xpath(s)).isDisplayed() && driver.findElement(By.xpath(p)).isDisplayed()) {
-					s = driver.findElement(By.xpath(s)).getText();
-					p = driver.findElement(By.xpath(p)).getText();
-					if (filter(s, p, input, omit) != null) {
-						System.out.println(filter(s, p, input, omit));
+				if (driver.findElement(By.xpath(nameList)).isDisplayed() && driver.findElement(By.xpath(priceList)).isDisplayed()) {
+					nameList = driver.findElement(By.xpath(nameList)).getText();
+					priceList = driver.findElement(By.xpath(priceList)).getText();
+					
+					//filtering results
+					if (filter(nameList, priceList, input, omit) != null) {
+						System.out.println(filter(nameList, priceList, input, omit));
 						j++;
 					}
 				}
@@ -60,9 +65,9 @@ public class Amazon extends Thread {
 		this.omit = omit;
 	}
 
-	public static String filter(String s, String p, String input, String omit) {
-		if (s.toLowerCase().contains(input.toLowerCase())) {
-			return s + " - " + p;
+	public static String filter(String nameList, String priceList, String input, String omit) {
+		if (nameList.toLowerCase().contains(input.toLowerCase())) {
+			return nameList + " - " + priceList;
 		}
 
 		return null;

@@ -22,9 +22,10 @@ public class RelianceDigital extends Thread {
 		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 		driver.manage().window().maximize();
 		
+		//searching..
 		driver.findElement(By.id("suggestionBoxEle")).sendKeys(input + Keys.RETURN);
 		try {
-			Thread.sleep(1500);
+			Thread.sleep(2200);
 		} catch (InterruptedException e1) {
 			e1.printStackTrace();
 		}
@@ -32,18 +33,21 @@ public class RelianceDigital extends Thread {
 		int j = 0;
 		driver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
 		
+		//fetching..
 		for (int i = 0; i < 40; i++) {
-			String s = "//*/ul/li[" + i + "]/div/a/div[1]/div[2]/p";
-			String p = "//*/ul/li[" + i + "]/div/a/div[1]/div[2]/div[1]/div/div/span[1]";
+			String nameList = "//*/ul/li[" + i + "]/div/a/div[1]/div[2]/p";
+			String priceList = "//*/ul/li[" + i + "]/div/a/div[1]/div[2]/div[1]/div/div/span[1]";
 			try {
-				if (driver.findElement(By.xpath(s)).isDisplayed() && driver.findElement(By.xpath(p)).isDisplayed()) {
+				if (driver.findElement(By.xpath(nameList)).isDisplayed() && driver.findElement(By.xpath(priceList)).isDisplayed()) {
 
-					s = driver.findElement(By.xpath(s)).getText();
+					nameList = driver.findElement(By.xpath(nameList)).getText();
 
-					p = driver.findElement(By.xpath(p)).getText();
+					priceList = driver.findElement(By.xpath(priceList)).getText();
 
-					if (filter(s, p, input, omit) != null) {
-						System.out.println(filter(s, p, input, omit));
+					if (filter(nameList, priceList, input, omit) != null) {
+						
+						//filtering..
+						System.out.println(filter(nameList, priceList, input, omit));
 						j++;
 					}
 				}
@@ -63,10 +67,9 @@ public class RelianceDigital extends Thread {
 		RelianceDigital.omit = omit;
 	}
 
-	public static String filter(String s, String p, String input, String omit) {
-		
-		if (s.toLowerCase().contains(input.toLowerCase())) {
-			return s + " - " + p;
+	public static String filter(String nameList, String priceList, String input, String omit) {
+		if (nameList.toLowerCase().contains(input.toLowerCase())) {
+			return nameList + " - " + priceList;
 		}
 
 		return null;
