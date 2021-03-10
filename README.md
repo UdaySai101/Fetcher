@@ -3,8 +3,8 @@
 <p align="center">A command line program that fetches search results from multiple shopping sites for comparison and ease of access.</p>
 
 # Requirements
--Chromedriver with a compatible version of browser installed.
--Good internet connection
+- Chromedriver with a compatible version of browser installed.
+- Good internet connection
 
 
 # Installation:

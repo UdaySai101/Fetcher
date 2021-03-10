@@ -67,8 +67,8 @@ public class Amazon extends Thread {
 		this.omit = omit;
 	}
 
-	public static String filter(String nameList, String priceList, String input, String omit) {
-		if (nameList.toLowerCase().contains(input.toLowerCase())) {
+	public String filter(String nameList, String priceList, String input, String omit) {
+		if (nameList.toLowerCase().contains(input.toLowerCase()) && !nameList.toLowerCase().contains(omit.toLowerCase())) {
 			return nameList + " - " + priceList;
 		}
 

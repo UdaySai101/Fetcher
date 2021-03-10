@@ -70,7 +70,7 @@ public class RelianceDigital extends Thread {
 		RelianceDigital.omit = omit;
 	}
 
-	public static String filter(String nameList, String priceList, String input, String omit) {
+	public  String filter(String nameList, String priceList, String input, String omit) {
 		if (nameList.toLowerCase().contains(input.toLowerCase())) {
 			return nameList + " - " + priceList;
 		}
