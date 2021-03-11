@@ -32,33 +32,68 @@ public class Flipkart extends Thread {
 				.sendKeys(input);
 		driver.findElement(By.xpath("//button[@class='L0Z3Pu']")).click();
 
-		// wait unil page loads.. 
+		// wait unil page loads..
 		WebDriverWait wait = new WebDriverWait(driver, 15);
-		wait.until(webDriver -> ((JavascriptExecutor) driver).executeScript("return document.readyState").toString().equals("complete"));
-				
-		int j = 0;
+		wait.until(webDriver -> ((JavascriptExecutor) driver).executeScript("return document.readyState").toString()
+				.equals("complete"));
+
+		int resultCount = 0;
 		System.out.println("In Flipkart: ");
 		driver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
 
 		// fetching..
 		for (int i = 0; i < 40; i++) {
 
-			String nameList = "//*[@id=\"container\"]/div/div[3]/div[1]/div[2]/div[   " + i
+			String nameListpath = "//*[@id='container']/div/div[3]/div[1]/div[2]/div[   " + i
 					+ "    ]/div/div/div/a/div[2]/div[" + " 1 " + "]/div[1]";
-			String priceList = "//*[@id=\"container\"]/div/div[3]/div[1]/div[2]/div[   " + i
+			String priceListpath = "//*[@id='container']/div/div[3]/div[1]/div[2]/div[   " + i
 					+ "  ]/div/div/div/a/div[2]/div[" + " 2 " + "]/div[1]/div[1]/div[1]";
+
 			try {
-				if (driver.findElement(By.xpath(nameList)).isDisplayed()
-						&& driver.findElement(By.xpath(priceList)).isDisplayed()) {
 
-					// extracting texts..
-					nameList = driver.findElement(By.xpath(nameList)).getText();
-					priceList = driver.findElement(By.xpath(priceList)).getText();
-					if (filter(nameList, priceList, input, omit) != null) {
+				try {
+					if (driver.findElement(By.xpath(nameListpath)).isDisplayed()
+							&& driver.findElement(By.xpath(priceListpath)).isDisplayed()) {
 
-						// filtering..
-						System.out.println(filter(nameList, priceList, input, omit));
-						j++;
+						// extracting texts..
+						String nameList = driver.findElement(By.xpath(nameListpath)).getText();
+						String priceList = driver.findElement(By.xpath(priceListpath)).getText();
+						if (filter(nameList, priceList, input, omit) != null) {
+
+							// filtering..
+							System.out.println(filter(nameList, priceList, input, omit));
+							resultCount++;
+						}
+					}
+				}
+
+				catch (Exception e) {
+
+					// finding elements with a different sets of xpaths..
+					for (int k = 1; k < 5; k++) {
+
+						String nameListpath2 = "//*[@id='container']/div/div[3]/div[1]/div[2]/div[" + i + "]/div/div["
+								+ k + "]/div/a[2]";
+						String priceListpath2 = "//*[@id='container']/div/div[3]/div[1]/div[2]/div[" + i + "]/div/div["
+								+ k + "]/div/a[3]/div/div[1]";
+
+						if (driver.findElement(By.xpath(nameListpath2)).isDisplayed()
+								&& driver.findElement(By.xpath(priceListpath2)).isDisplayed()) {
+
+							// extracting texts..
+							String nameList = driver.findElement(By.xpath(nameListpath2)).getText();
+							String priceList = driver.findElement(By.xpath(priceListpath2)).getText();
+
+							// filtering..
+							String result = filter(nameList, priceList, input, omit);
+
+							if (result != null) {
+
+								// printing results..
+								System.out.println(result);
+								resultCount++;
+							}
+						}
 					}
 				}
 			} catch (Exception e) {
@@ -68,7 +103,8 @@ public class Flipkart extends Thread {
 
 		driver.quit();
 
-		if (j == 0) {
+		// if nothing was found..
+		if (resultCount == 0) {
 			System.out.println("Cannot find anything!");
 		}
 	}
@@ -78,9 +114,23 @@ public class Flipkart extends Thread {
 		omit = omitter;
 	}
 
-	public  String filter(String nameList, String priceList, String input, String omit) {
-		if (nameList.toLowerCase().contains(input.toLowerCase())) {
-			return nameList + " - " + priceList;
+	public String filter(String itemName, String itemPrice, String input, String omit) {
+
+		String[] splits = input.split(" ");
+
+		for (int i = 0; i < splits.length; i++) {
+
+			if (itemName.toLowerCase().contains(splits[i].toLowerCase())) {
+				continue;
+			}
+
+			else {
+				return null;
+			}
+		}
+
+		if (!itemName.toLowerCase().contains(omit.toLowerCase())) {
+			return itemName + " - " + itemPrice;
 		}
 
 		return null;

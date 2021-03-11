@@ -7,36 +7,17 @@ import org.junit.Test;
 
 public class Junittesting {
 
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-		
-	}
-
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-	}
-
-	@Before
-	public void setUp() throws Exception {
-		
-		
-	}
-
-	@After
-	public void tearDown() throws Exception {
-	}
-
 	@Test
 	public void testAmazon() {
 	
-		String name= "Oneplus 8 pro back cover";
+		String name= "Oneplus pro 8t";
 		String price= "?499";
-		String input = "Oneplus";
+		String input = "Oneplus 8";
 		String omit = "back cover";
 		
 		Amazon amazon=new Amazon(input,omit);
 
-	    assertEquals(amazon.filter(name,price,input,omit), null);
+	    assertEquals(amazon.filter(name,price,input,omit), name + " - " + price);
 	}
 	
 	@Test

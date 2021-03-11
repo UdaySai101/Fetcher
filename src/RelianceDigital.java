@@ -1,5 +1,4 @@
 import java.util.concurrent.TimeUnit;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
@@ -26,32 +25,43 @@ public class RelianceDigital extends Thread {
 
 		// searching..
 		driver.findElement(By.id("suggestionBoxEle")).sendKeys(input + Keys.RETURN);
-		
-		// wait unil page loads.. 
+
+		// wait unil page loads..
 		WebDriverWait wait = new WebDriverWait(driver, 15);
-		wait.until(webDriver -> ((JavascriptExecutor) driver).executeScript("return document.readyState").toString().equals("complete"));
-		
+		wait.until(webDriver -> ((JavascriptExecutor) driver).executeScript("return document.readyState").toString()
+				.equals("complete"));
+
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e1) {
+
+			e1.printStackTrace();
+		}
+
 		System.out.println("In RelianceDigital: ");
-		int j = 0;
+		int count = 0;
 		driver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
 
 		// fetching..
 		for (int i = 0; i < 40; i++) {
-			String nameList = "//*/ul/li[" + i + "]/div/a/div[1]/div[2]/p";
-			String priceList = "//*/ul/li[" + i + "]/div/a/div[1]/div[2]/div[1]/div/div/span[1]";
+			String nameListpath = "//*/ul/li[" + i + "]/div/a/div[1]/div[2]/p";
+			String priceListpath = "//*/ul/li[" + i + "]/div/a/div[1]/div[2]/div[1]/div/div/span[1]";
 			try {
-				if (driver.findElement(By.xpath(nameList)).isDisplayed()
-						&& driver.findElement(By.xpath(priceList)).isDisplayed()) {
+				if (driver.findElement(By.xpath(nameListpath)).isDisplayed()
+						&& driver.findElement(By.xpath(priceListpath)).isDisplayed()) {
 
 					// extracting texts..
-					nameList = driver.findElement(By.xpath(nameList)).getText();
-					priceList = driver.findElement(By.xpath(priceList)).getText();
+					String nameList = driver.findElement(By.xpath(nameListpath)).getText();
+					String priceList = driver.findElement(By.xpath(priceListpath)).getText();
 
-					if (filter(nameList, priceList, input, omit) != null) {
+					// filtering..
+					String result = filter(nameList, priceList, input, omit);
 
-						// filtering..
-						System.out.println(filter(nameList, priceList, input, omit));
-						j++;
+					if (result != null) {
+
+						// printing results..
+						System.out.println(result);
+						count++;
 					}
 				}
 			} catch (Exception e) {
@@ -60,7 +70,9 @@ public class RelianceDigital extends Thread {
 		}
 
 		driver.quit();
-		if (j == 0) {
+		
+		// if nothing was found..
+		if (count == 0) {
 			System.out.println("Cannot find anything!");
 		}
 	}
@@ -70,9 +82,23 @@ public class RelianceDigital extends Thread {
 		RelianceDigital.omit = omit;
 	}
 
-	public  String filter(String nameList, String priceList, String input, String omit) {
-		if (nameList.toLowerCase().contains(input.toLowerCase())) {
-			return nameList + " - " + priceList;
+	public String filter(String itemName, String itemPrice, String input, String omit) {
+
+		String[] splits = input.split(" ");
+
+		for (int i = 0; i < splits.length; i++) {
+
+			if (itemName.toLowerCase().contains(splits[i].toLowerCase())) {
+				continue;
+			}
+
+			else {
+				return null;
+			}
+		}
+
+		if (!itemName.toLowerCase().contains(omit.toLowerCase())) {
+			return itemName + " - " + itemPrice;
 		}
 
 		return null;
